@@ -1,0 +1,25 @@
+# Development Dockerfile for API
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install development tools
+RUN apk add --no-cache git curl
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Create uploads directory
+RUN mkdir -p uploads
+
+# Expose port
+EXPOSE 3001
+
+# Start development server with hot reload
+CMD ["npm", "run", "dev"]

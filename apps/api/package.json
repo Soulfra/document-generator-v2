@@ -13,8 +13,7 @@
   "dependencies": {
     "express": "^4.21.2",
     "cors": "^2.8.5",
-    "@soulfra/core": "workspace:*",
-    "@soulfra/auth": "workspace:*"
+    "multer": "^2.0.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1",

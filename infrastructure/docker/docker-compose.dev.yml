@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  # Web Application (Next.js)
+  web:
+    build:
+      context: ../../apps/web
+      dockerfile: ../../infrastructure/docker/Dockerfile.web.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../../apps/web:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
+    depends_on:
+      - api
+    networks:
+      - document-generator
+
+  # API Server (Express.js)
+  api:
+    build:
+      context: ../../apps/api
+      dockerfile: ../../infrastructure/docker/Dockerfile.api.dev
+    ports:
+      - "3001:3001"
+    volumes:
+      - ../../apps/api:/app
+      - /app/node_modules
+      - api_uploads:/app/uploads
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/document_generator_dev
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - document-generator
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: document_generator_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../../database/init:/docker-entrypoint-initdb.d
+    networks:
+      - document-generator
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - document-generator
+
+  # Database Admin (pgAdmin)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - document-generator
+
+  # Redis Admin (RedisInsight)
+  redis-insight:
+    image: redislabs/redisinsight:latest
+    ports:
+      - "8001:8001"
+    depends_on:
+      - redis
+    networks:
+      - document-generator
+
+volumes:
+  postgres_data:
+  redis_data:
+  api_uploads:
+
+networks:
+  document-generator:
+    driver: bridge

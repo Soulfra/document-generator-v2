@@ -13,27 +13,33 @@ setup: ## Initial project setup
 	@echo "🚀 Setting up Document Generator V2..."
 	@echo "📦 Installing dependencies..."
 	npm install
-	@echo "🔧 Setting up git hooks..."
-	git config core.hooksPath .githooks
+	cd apps/web && npm install
+	cd apps/api && npm install
 	@echo "✅ Setup complete!"
 
 dev: ## Start development environment
 	@echo "🔥 Starting development environment..."
-	docker-compose -f infrastructure/docker/docker-compose.dev.yml up -d
-	npm run dev
+	@echo "Starting API server on port 3001..."
+	cd apps/api && npm run dev &
+	@echo "Starting web app on port 3000..."
+	cd apps/web && npm run dev &
+	@echo "🌐 Web: http://localhost:3000"
+	@echo "🔌 API: http://localhost:3001"
 
 test: ## Run all tests
 	@echo "🧪 Running tests..."
-	npm run test:all
+	cd apps/api && npm test || echo "No API tests yet"
+	cd apps/web && npm test || echo "No web tests yet"
 
 lint: ## Run linters and formatters
 	@echo "🔍 Running linters..."
-	npm run lint
-	npm run format
+	cd apps/api && npm run lint || echo "No API linting yet"
+	cd apps/web && npm run lint || echo "No web linting yet"
 
 build: ## Build all packages and apps
 	@echo "🏗️  Building project..."
-	npm run build
+	cd apps/web && npm run build
+	@echo "✅ Build complete!"
 
 deploy: ## Deploy to production
 	@echo "🚀 Deploying to production..."

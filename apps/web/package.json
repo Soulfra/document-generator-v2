@@ -1,0 +1,23 @@
+{
+  "name": "@soulfra/web",
+  "version": "2.0.0",
+  "description": "Document Generator web interface",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "@soulfra/core": "workspace:*",
+    "@soulfra/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.0"
+  }
+}

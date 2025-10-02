@@ -1,0 +1,37 @@
+{
+  "name": "@soulfra/document-generator-v2",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Modern monorepo for Document Generator platform",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "services/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "test:all": "npm run test && npm run lint",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "deploy": "turbo run build && turbo run deploy"
+  },
+  "devDependencies": {
+    "turbo": "^1.13.0",
+    "prettier": "^3.3.3",
+    "eslint": "^8.57.0",
+    "husky": "^8.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "author": "Soulfra",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Soulfra/document-generator-v2.git"
+  }
+}

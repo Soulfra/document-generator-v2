@@ -19,12 +19,12 @@ setup: ## Initial project setup
 
 dev: ## Start development environment
 	@echo "🔥 Starting development environment..."
-	@echo "Starting API server on port 3001..."
+	@echo "Starting API server on port 3002..."
 	cd apps/api && npm run dev &
 	@echo "Starting web app on port 3000..."
 	cd apps/web && npm run dev &
 	@echo "🌐 Web: http://localhost:3000"
-	@echo "🔌 API: http://localhost:3001"
+	@echo "🔌 API: http://localhost:3002"
 
 test: ## Run all tests
 	@echo "🧪 Running tests..."
@@ -93,4 +93,21 @@ restart: ## Restart development environment
 	docker-compose -f infrastructure/docker/docker-compose.dev.yml restart
 
 stop: ## Stop all services
-	docker-compose -f infrastructure/docker/docker-compose.dev.yml down
+	@echo "🛑 Stopping all services..."
+	@pkill -f "next dev" || true
+	@pkill -f "nodemon" || true
+	@pkill -f "node.*apps/api" || true
+	@echo "✅ All services stopped"
+
+kill-ports: ## Kill processes on common ports
+	@echo "🔪 Killing processes on ports 3000, 3001, 3002..."
+	@lsof -ti:3000 | xargs kill -9 2>/dev/null || true
+	@lsof -ti:3001 | xargs kill -9 2>/dev/null || true
+	@lsof -ti:3002 | xargs kill -9 2>/dev/null || true
+	@echo "✅ Ports cleared"
+
+check-ports: ## Check what's running on ports
+	@echo "🔍 Checking ports 3000-3002..."
+	@lsof -i:3000 || echo "Port 3000: free"
+	@lsof -i:3001 || echo "Port 3001: free"
+	@lsof -i:3002 || echo "Port 3002: free"
